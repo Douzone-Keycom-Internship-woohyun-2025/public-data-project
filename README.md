@@ -17,7 +17,7 @@ public-data-project/
 ## 기술 스택
 
 - Frontend: React, JavaScript, TypeScript
-- Backend: Spring Boot / C# (추후 결정)
+- Backend: Spring Boot 
 - Database: MySQL (예정)
 - Data Source: 공공데이터포털 API
 
@@ -30,7 +30,7 @@ public-data-project/
 | 이름              | 역할      | 담당                            |
 | ----------------- | --------- | ------------------------------- |
 | 심우현            | Fullstack | React UI / API 연동 / DB / 서버 |
-| 박효민 선임연구원 | Mentor    | 프로젝트 멘토링                 |
+| 박효민 선임연구원 | Mentor    | 프로젝트, 백엔드 멘토링          |
 | 양태인 선임연구원 | Mentor    | 프론트엔드 멘토링               |
 
 ---
