@@ -1,4 +1,4 @@
-# 🏫 KNU x Douzone-Kicom Internship 2025
+# KNU x Douzone-Kicom Internship 2025
 
 ## 프로젝트 개요
 
