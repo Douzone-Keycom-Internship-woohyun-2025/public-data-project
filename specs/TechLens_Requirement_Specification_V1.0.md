@@ -88,14 +88,17 @@ TechLens는 특허청 KIPRIS Open API 데이터를 활용하여 경쟁사의 연
 
 ### 6. 데이터 흐름 요약
 
-<img width="2132" height="2418" alt="Untitled diagram-2025-11-03-110635" src="https://github.com/user-attachments/assets/ee949ff5-f0a9-4e20-b46c-deca299e45be" />
+
+<img width="881" height="902" alt="image" src="https://github.com/user-attachments/assets/d2e8789a-7139-45bb-9336-44b5004c575c" />
+
+
 
 
 ---
 
 ### 7. 시스템 아키텍처 다이어그램
 
-<img width="621" height="600" alt="제목 없는 다이어그램 drawio (2)" src="https://github.com/user-attachments/assets/efd15038-480f-4ecf-8b8e-b55db8131362" />
+<img width="881" height="902" alt="제목 없는 다이어그램 drawio (2)" src="https://github.com/user-attachments/assets/efd15038-480f-4ecf-8b8e-b55db8131362" />
 
 ---
 
