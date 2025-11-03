@@ -130,3 +130,7 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 📄 **Version:** 1.0  
 📅 **Date:** 2025-11-03  
 👤 **작성자:** 심우현 (KNU / Kicom Internship)
+
+© 2025 TechLens Project. All rights reserved.
+본 문서의 내용은 Kicom × KNU 인턴십 프로그램의 일부로 작성되었으며,
+무단 복제·배포를 금합니다.
