@@ -87,8 +87,9 @@ TechLens는 특허청 KIPRIS Open API 데이터를 활용하여 경쟁사의 연
 ---
 
 ### 6. 데이터 흐름 요약
-> ※ 본 섹션은 별도의 **diagrams.net 시각화 도식**으로 작성될 예정입니다.  
-> (React → Node.js → MariaDB → KIPRIS API 간 요청/응답 흐름 설명 포함)
+
+<img width="2132" height="2418" alt="Untitled diagram-2025-11-03-110635" src="https://github.com/user-attachments/assets/ee949ff5-f0a9-4e20-b46c-deca299e45be" />
+
 
 ---
 
