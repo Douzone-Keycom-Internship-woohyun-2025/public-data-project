@@ -6,6 +6,12 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 
 ---
 
+## 📊 ERD 다이어그램
+
+[BookStore (1).pdf](https://github.com/user-attachments/files/23296196/BookStore.1.pdf)
+
+---
+
 ## 1. 개요
 
 | 항목 | 내용 |
@@ -77,7 +83,7 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 | ADDDATE | VARCHAR(17) | NOT NULL | 등록일시 (YYYYMMDDHHmmssfff) |
 
 **제약조건**
-- PRIMARY KEY (`PATENT_ID`)
+- PRIMARY KEY (`PATENT_TBLKEY`)
 - FOREIGN KEY (`USER_TBLKEY`) REFERENCES `USERS`(`USER_TBLKEY`)
 - UNIQUE (`USER_TBLKEY`, `APPLICATION_NUMBER`)
 
@@ -122,4 +128,4 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 
 📄 **Version:** 1.0  
 📅 **Date:** 2025-11-03  
-👤 **작성자:** 심우현 (KNU / Kicom Internship)  
+👤 **작성자:** 심우현 (KNU / Kicom Internship)
