@@ -93,7 +93,8 @@ TechLens는 특허청 KIPRIS Open API 데이터를 활용하여 경쟁사의 연
 ---
 
 ### 7. 시스템 아키텍처 다이어그램
-> ※ 본 섹션은 **별도 시스템 구성도 (PPT/Diagram)** 형태로 작성될 예정입니다.
+
+<img width="621" height="600" alt="제목 없는 다이어그램 drawio (2)" src="https://github.com/user-attachments/assets/efd15038-480f-4ecf-8b8e-b55db8131362" />
 
 ---
 
