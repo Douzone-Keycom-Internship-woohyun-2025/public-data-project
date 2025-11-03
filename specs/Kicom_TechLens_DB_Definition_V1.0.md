@@ -8,7 +8,8 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 
 ## 📊 ERD 다이어그램
 
-[BookStore (1).pdf](https://github.com/user-attachments/files/23296196/BookStore.1.pdf)
+<img width="1412" height="862" alt="BookStore" src="https://github.com/user-attachments/assets/fd6d122a-f3eb-4661-ba3c-371ea8f709c7" />
+
 
 ---
 
