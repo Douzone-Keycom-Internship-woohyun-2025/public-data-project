@@ -17,9 +17,9 @@ public-data-project/
 ## 기술 스택
 
 - Frontend: React, JavaScript, TypeScript
-- Backend: Spring Boot 
-- Database: MySQL (예정)
-- Data Source: 공공데이터포털 API
+- Backend: Node.js, Express
+- Database: MariaDB
+- Data Source: KIPRIS API
 
 ## 일정
 
