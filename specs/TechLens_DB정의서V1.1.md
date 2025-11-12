@@ -45,7 +45,7 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 |--------|--------------|-----------|------|
 | USER_TBLKEY | **SERIAL** | PK | 사용자 고유 식별자 |
 | EMAIL | VARCHAR(255) | UNIQUE, NOT NULL | 로그인용 이메일 |
-| PASSWORD | VARCHAR(255) | NOT NULL | 해시된 비밀번호 (bcrypt) |
+| PASSWORD_HASH | VARCHAR(255) | NOT NULL | 해시된 비밀번호 (bcrypt) |
 | ADDDATE | **TIMESTAMP** | **DEFAULT NOW()** | 계정 생성일시 (자동) |
 
 ---
