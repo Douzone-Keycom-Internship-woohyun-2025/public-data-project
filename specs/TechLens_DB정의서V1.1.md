@@ -6,12 +6,27 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 
 ---
 
+## 목차
+- [ERD 다이어그램](#erd-다이어그램)
+- [1. 개요](#1-개요)
+- [2. 테이블 목록](#2-테이블-목록)
+- [3. 테이블 정의서](#3-테이블-정의서)
+  - [3.1 USERS (사용자 계정 정보)](#31-users-사용자-계정-정보)
+  - [3.2 PRESETS (프리셋 정보)](#32-presets-프리셋-정보)
+  - [3.3 FAVORITE_PATENTS (관심특허 정보)](#33-favorite_patents-관심특허-정보)
+  - [3.4 PATENT_IPC_SUBCLASS_MAP (특허–Subclass 매핑 정보)](#34-patent_ipc_subclass_map-특허subclass-매핑-정보)
+  - [3.5 IPC_SUBCLASS_MAP (IPC Subclass 사전)](#35-ipc_subclass_map-ipc-subclass-사전)
+  - [3.6 JWT_BLACKLIST (JWT 로그아웃 토큰 보관)](#36-jwt_blacklist-jwt-로그아웃-토큰-보관)
+- [4. 설계 요약](#4-설계-요약)
+- [5. 주요 변경사항 (V1.0 → V1.1)](#5-주요-변경사항-v10--v11)
+- [6. PostgreSQL 생성 스크립트](#6-postgresql-생성-스크립트)
+- [메타](#메타)
+
+---
+
 ## ERD 다이어그램
 
-
 <img width="1391" height="866" alt="BookStore (2)" src="https://github.com/user-attachments/assets/9e02caa1-0c94-4828-b495-8695189beb6f" />
-
-
 
 ---
 
@@ -124,9 +139,8 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 
 | 컬럼명     | 데이터 타입 | 제약조건         | 설명                  |
 |------------|-------------|------------------|-----------------------|
-| TOKEN      | TEXT        | **PK, NOT NULL** | JWT 원문(서명 포함)\* |
+| TOKEN      | TEXT        | **PK, NOT NULL** | JWT 원문(서명 포함)   |
 | EXPIRES_AT | TIMESTAMPTZ | **NOT NULL**     | 토큰 만료 일시(UTC)   |
-
 
 **운영 메모**
 - 로그아웃 시: (token, exp) 저장
@@ -251,11 +265,13 @@ CREATE INDEX idx_patent_ipc_subclass   ON patent_ipc_subclass_map(ipc_subclass);
 CREATE INDEX idx_jwt_blacklist_expires ON jwt_blacklist(expires_at);
 ```
 
-Version: 1.1
-Date: 2025-11-13
-작성자: 심우현 (KNU / Kicom Internship)
-변경사항: PostgreSQL 환경 대응, USERS.password_hash 반영, JWT_BLACKLIST 테이블 추가
+---
 
-© 2025 TechLens Project. All rights reserved.
-본 문서의 내용은 Kicom × KNU 인턴십 프로그램의 일부로 작성되었으며,
-무단 복제·배포를 금합니다.
+## 메타
+- Version: 1.1  
+- Date: 2025-11-13  
+- 작성자: 심우현 (KNU / Kicom Internship)  
+- 변경사항: PostgreSQL 환경 대응, `USERS.password_hash` 반영, `JWT_BLACKLIST` 테이블 추가  
+
+© 2025 TechLens Project. All rights reserved.  
+본 문서의 내용은 Kicom × KNU 인턴십 프로그램의 일부로 작성되었으며, 무단 복제·배포를 금합니다.
