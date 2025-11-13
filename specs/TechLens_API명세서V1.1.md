@@ -876,3 +876,14 @@ Authorization: Bearer <token>
 
 ### 관심특허 관리
 관심특허는 출원번호만으로 추가할 수 있으며, 백엔드에서 특허 정보를 자동으로 조회합니다. 관심특허는 20개씩 페이징되어 조회됩니다.
+
+---
+
+Version: 1.1
+Date: 2025-11-13
+작성자: 심우현 (KNU / Kicom Internship)
+변경사항: PostgreSQL 환경 대응, USERS.password_hash 반영, JWT_BLACKLIST 테이블 추가
+
+© 2025 TechLens Project. All rights reserved.
+본 문서의 내용은 Kicom × KNU 인턴십 프로그램의 일부로 작성되었으며,
+무단 복제·배포를 금합니다.
