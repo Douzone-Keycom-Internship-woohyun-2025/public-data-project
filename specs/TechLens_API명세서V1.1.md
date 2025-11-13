@@ -14,6 +14,7 @@ Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer ·
     - [1.1 회원가입](#11-회원가입)
     - [1.2 로그인](#12-로그인)
     - [1.3 로그아웃](#13-로그아웃)
+    - [1.4 토근 재발급](#14-토근재발급)
   - [2. Presets (프리셋 관리)](#2-presets-프리셋-관리)
     - [2.1 프리셋 생성](#21-프리셋-생성)
     - [2.2 프리셋 목록 조회](#22-프리셋-목록-조회)
@@ -44,7 +45,7 @@ Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer ·
 | Base URL | `https://techlens-backend-develop.onrender.com` |
 | 인증 방식 | JWT Bearer Token |
 | API 버전 | 2.1.0 |
-| 총 엔드포인트 | 16개 |
+| 총 엔드포인트 | 17개 |
 | 응답 형식 | JSON |
 
 > 참고: 현재 배포는 URL 버전 프리픽스(`/api/v1`) 없이 **루트 경로**에 라우팅됩니다. 예) `/users`, `/presets`.
@@ -55,24 +56,29 @@ Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer ·
 
 ### Authorization 헤더
 ```http
-Authorization: Bearer <JWT 토큰>
+Authorization: Bearer <accessToken>
 ```
 
 ### 토큰 획득
 1) `POST /users/signup`  
 2) `POST /users/login`  
-3) 응답의 `data.token` 추출  
-4) 모든 요청의 `Authorization`에 포함
+3) 응답의 data.accessToken + data.refreshToken 추출 
+4) API 요청 시 Authorization 에 AccessToken 포함
 
-### JWT & 로그아웃 정책
-- 로그인 시 `exp` 포함된 JWT 발급
-- `POST /users/logout` 시 해당 토큰을 블랙리스트에 등록하여 만료 전에도 즉시 무효화
-- 블랙리스트 토큰 접근 시 401
-- 만료된 블랙리스트 항목은 주기적으로 purge
+### AccessToken / RefreshToken 정책
+- 로그인 시 AccessToken(1시간) + RefreshToken(7일) 발급
+- RefreshToken은 서버 DB에 저장됨
+- AccessToken이 만료되면 /users/refresh 로 재발급
 
+### 로그아웃 정책 
+- /users/logout 호출 시 해당 사용자의 RefreshToken을 DB에서 삭제
+- RefreshToken 삭제 후:
+   - 더 이상 AccessToken 재발급 불가
+   - AccessToken은 자체 만료 시까지 유효
+  
 오류 예시:
 ```json
-{ "status": "fail", "message": "로그아웃된 토큰입니다." }
+{ "status": "fail", "message": "RefreshToken이 유효하지 않습니다." }
 ```
 
 ---
@@ -97,8 +103,13 @@ Response:
   "status": "success",
   "message": "회원가입 성공",
   "data": {
-    "user": { "user_tblkey": 2, "email": "user@techlens.net", "adddate": "2025-11-12T21:36:16.430Z" },
-    "token": "eyJhbGciOiJIUzI1NiIsInR..."
+    "user": {
+      "user_tblkey": 2,
+      "email": "user@techlens.net",
+      "adddate": "2025-11-12T21:36:16.430Z"
+    },
+    "accessToken": "xxx.yyy.zzz",
+    "refreshToken": "rrr.sss.ttt"
   }
 }
 ```
@@ -121,8 +132,13 @@ Response:
   "status": "success",
   "message": "로그인 성공",
   "data": {
-    "user": { "user_tblkey": 1, "email": "user@techlens.net", "adddate": "2025-11-11T23:08:29.608Z" },
-    "token": "eyJhbGciOiJIUzI1NiIsInR..."
+    "user": {
+      "user_tblkey": 1,
+      "email": "user@techlens.net",
+      "adddate": "2025-11-11T23:08:29.608Z"
+    },
+    "accessToken": "xxx.yyy.zzz",
+    "refreshToken": "rrr.sss.ttt"
   }
 }
 ```
@@ -131,12 +147,40 @@ Response:
 
 #### 1.3 로그아웃
 - 메서드/경로: **POST** `/users/logout`
-- 인증: 필수
-- 응답: **200 OK**
+- 인증: AccessToken 필요
+
+  Request:
+```json
+{ "refreshToken": "rrr.sss.ttt" }
+```
 
 Response:
 ```json
 { "status": "success", "message": "로그아웃 성공" }
+```
+> 로그아웃 시 DB에 저장된 RefreshToken이 삭제되며,
+AccessToken은 자연 만료됩니다.
+
+---
+
+#### 1.4 토큰재발급
+- 메서드/경로: **POST** `/users/refresh`
+- 인증: 불필요 (RefreshToken으로 인증)
+
+Request:
+```json
+{ "refreshToken": "rrr.sss.ttt" }
+```
+
+Response:
+```json
+{
+  "status": "success",
+  "message": "토큰 재발급 성공",
+  "data": {
+    "accessToken": "새로운AccessToken"
+  }
+}
 ```
 
 ---
@@ -466,7 +510,7 @@ Response:
 
 ## 메타
 - Version: 1.1  
-- Date: 2025-11-13  
+- Date: 2025-11-14  
 - 작성자: 심우현 (KNU / Kicom Internship)  
-- 변경사항: **배포 URL 반영(`onrender.com`)**, PostgreSQL 대응, `USERS.password_hash` 반영, JWT 블랙리스트 정책 반영  
+- 변경사항: **배포 URL 반영(`onrender.com`)**, PostgreSQL 대응, `USERS.password_hash` 반영, JWT + RefreshToken 정책 반영 
 - © 2025 TechLens Project. All rights reserved. (Kicom × KNU 인턴십 문서 / 무단 복제·배포 금지)
