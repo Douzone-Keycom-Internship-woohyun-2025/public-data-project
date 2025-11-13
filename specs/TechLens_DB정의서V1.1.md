@@ -1,4 +1,4 @@
-# TechLens 데이터베이스 정의서 (V1.2)
+# TechLens 데이터베이스 정의서 (V1.1)
 
 본 문서는 **Kicom × KNU TechLens 프로젝트**의 데이터베이스 구조를 정의한 문서입니다.  
 본 정의서는 **PostgreSQL 환경**에서 작성되었으며,  
@@ -26,7 +26,8 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 
 ## ERD 다이어그램
 
-<img width="1391" height="866" alt="TechLens ERD" src="https://github.com/user-attachments/assets/9e02caa1-0c94-4828-b495-8695189beb6f" />
+<img width="1221" height="866" alt="BookStore (3)" src="https://github.com/user-attachments/assets/873a6b53-ee1c-452c-b23f-a6c386c2d294" />
+
 
 ---
 
