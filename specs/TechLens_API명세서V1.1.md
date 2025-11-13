@@ -1,4 +1,5 @@
 # TechLens API 명세서 · v1.1
+
 Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer · 응답: JSON
 
 ---
@@ -14,7 +15,7 @@ Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer ·
     - [1.1 회원가입](#11-회원가입)
     - [1.2 로그인](#12-로그인)
     - [1.3 로그아웃](#13-로그아웃)
-    - [1.4 토근재발급](#14-토근재발급)
+    - [1.4 토큰재발급](#14-토큰재발급)
   - [2. Presets (프리셋 관리)](#2-presets-프리셋-관리)
     - [2.1 프리셋 생성](#21-프리셋-생성)
     - [2.2 프리셋 목록 조회](#22-프리셋-목록-조회)
@@ -25,7 +26,7 @@ Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer ·
     - [3.1 기본 검색](#31-기본-검색)
     - [3.2 상세 검색](#32-상세-검색)
     - [3.3 특허 상세 조회](#33-특허-상세-조회)
-  - [4. Analysis (요약 분석)](#4-analysis-요약-분석)
+  - [4. Summary (요약 분석)](#4-summary-요약-분석)
     - [4.1 요약 분석](#41-요약-분석)
   - [5. Favorites (관심특허 관리)](#5-favorites-관심특허-관리)
     - [5.1 관심특허 목록 조회](#51-관심특허-목록-조회)
@@ -40,6 +41,7 @@ Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer ·
 ---
 
 ## 개요
+
 | 항목 | 값 |
 |------|-----|
 | Base URL | `https://techlens-backend-develop.onrender.com` |
@@ -60,22 +62,22 @@ Authorization: Bearer <accessToken>
 ```
 
 ### 토큰 획득
-1) `POST /users/signup`  
-2) `POST /users/login`  
-3) 응답의 data.accessToken + data.refreshToken 추출 
-4) API 요청 시 Authorization 에 AccessToken 포함
+1) `POST /users/signup`
+2) `POST /users/login`
+3) 응답의 data.accessToken + data.refreshToken 추출
+4) API 요청 시 Authorization에 accessToken 포함
 
 ### AccessToken / RefreshToken 정책
-- 로그인 시 AccessToken(1시간) + RefreshToken(7일) 발급
-- RefreshToken은 서버 DB에 저장됨
-- AccessToken이 만료되면 /users/refresh 로 재발급
+- 로그인 시 accessToken(1시간) + refreshToken(7일) 발급
+- refreshToken은 서버 DB에 저장됨
+- accessToken이 만료되면 /users/refresh 호출해 재발급
 
-### 로그아웃 정책 
-- /users/logout 호출 시 해당 사용자의 RefreshToken을 DB에서 삭제
-- RefreshToken 삭제 후:
-   - 더 이상 AccessToken 재발급 불가
-   - AccessToken은 자체 만료 시까지 유효
-  
+### 로그아웃 정책
+- /users/logout 호출 시 해당 사용자의 refreshToken을 DB에서 삭제
+- refreshToken 삭제 후:
+  - 더 이상 accessToken 재발급 불가
+  - 기존 accessToken은 자체 만료 시까지 유효
+
 오류 예시:
 ```json
 { "status": "fail", "message": "RefreshToken이 유효하지 않습니다." }
@@ -147,25 +149,25 @@ Response:
 
 #### 1.3 로그아웃
 - 메서드/경로: **POST** `/users/logout`
-- 인증: AccessToken 필요
+- 인증: accessToken 필수
 
-  Request:
+Request:
 ```json
 { "refreshToken": "rrr.sss.ttt" }
 ```
 
 Response:
 ```json
-{ "status": "success", "message": "로그아웃 성공" }
+{ "status": "success", "message": "로그아웃 완료" }
 ```
-> 로그아웃 시 DB에 저장된 RefreshToken이 삭제되며,
-AccessToken은 자연 만료됩니다.
+
+> 로그아웃 시 DB에 저장된 refreshToken이 삭제되며, 기존 accessToken은 자연 만료됩니다.
 
 ---
 
 #### 1.4 토큰재발급
 - 메서드/경로: **POST** `/users/refresh`
-- 인증: 불필요 (RefreshToken으로 인증)
+- 인증: 불필요 (refreshToken으로 인증)
 
 Request:
 ```json
@@ -186,7 +188,8 @@ Response:
 ---
 
 ### 2) Presets (프리셋 관리)
-프리셋은 검색 조건 템플릿. 목록 조회는 description 제외, 상세 조회에서 전체 정보 제공.
+
+프리셋은 검색 조건 템플릿입니다. 목록 조회는 description을 제외하고, 상세 조회에서만 전체 정보를 제공합니다.
 
 #### 2.1 프리셋 생성
 - 메서드/경로: **POST** `/presets`
@@ -237,9 +240,24 @@ Response (description 제외):
     "total": 5,
     "page": 1,
     "pageSize": 10,
+    "totalPages": 1,
     "presets": [
-      { "id": 1, "presetName": "삼성 2024년 분석", "applicant": "삼성전자", "startDate": "20240101", "endDate": "20241231", "createdAt": "2025-11-03T10:30:00Z" },
-      { "id": 2, "presetName": "LG 2023년 분석", "applicant": "LG전자", "startDate": "20230101", "endDate": "20231231", "createdAt": "2025-11-02T14:15:00Z" }
+      {
+        "id": 1,
+        "presetName": "삼성 2024년 분석",
+        "applicant": "삼성전자",
+        "startDate": "20240101",
+        "endDate": "20241231",
+        "createdAt": "2025-11-03T10:30:00Z"
+      },
+      {
+        "id": 2,
+        "presetName": "LG 2023년 분석",
+        "applicant": "LG전자",
+        "startDate": "20230101",
+        "endDate": "20231231",
+        "createdAt": "2025-11-02T14:15:00Z"
+      }
     ]
   }
 }
@@ -271,7 +289,7 @@ Response:
 ---
 
 #### 2.4 프리셋 수정
-- 메서드/경로: **PUT** `/presets/{presetId}`
+- 메서드/경로: **PATCH** `/presets/{presetId}`
 - 인증: 필수
 - 응답: **200 OK**
 
@@ -301,7 +319,8 @@ Response:
 ---
 
 ### 3) Patents (특허 검색)
-프리셋에서 추출된 회사명·기간으로 검색. 페이지당 20건.
+
+프리셋에서 추출된 회사명과 기간으로 특허를 검색합니다. 페이지당 20건입니다.
 
 #### 3.1 기본 검색
 - 메서드/경로: **POST** `/patents/search/basic`
@@ -310,7 +329,12 @@ Response:
 
 Request:
 ```json
-{ "applicant": "삼성전자", "startDate": "20240101", "endDate": "20241231", "page": 1 }
+{
+  "applicant": "삼성전자",
+  "startDate": "20240101",
+  "endDate": "20241231",
+  "page": 1
+}
 ```
 
 Response (요약):
@@ -318,7 +342,12 @@ Response (요약):
 {
   "status": "success",
   "message": "특허 검색 성공",
-  "data": { "total": 635, "page": 1, "totalPages": 32, "patents": [ /* ... */ ] }
+  "data": {
+    "total": 635,
+    "page": 1,
+    "totalPages": 32,
+    "patents": [ /* ... */ ]
+  }
 }
 ```
 
@@ -346,7 +375,12 @@ Response (요약):
 {
   "status": "success",
   "message": "특허 검색 성공",
-  "data": { "total": 145, "page": 1, "totalPages": 8, "patents": [ /* ... */ ] }
+  "data": {
+    "total": 145,
+    "page": 1,
+    "totalPages": 8,
+    "patents": [ /* ... */ ]
+  }
 }
 ```
 
@@ -384,29 +418,66 @@ Response (요약):
 
 ---
 
-### 4) Analysis (요약 분석)
+### 4) Summary (요약 분석)
 
 #### 4.1 요약 분석
-- 메서드/경로: **POST** `/analysis/summary`
+- 메서드/경로: **GET** `/summary`
 - 인증: 필수
 - 응답: **200 OK**
+- 설명: 요약 분석은 두 가지 방식으로 조회 가능합니다:
+  - **프리셋 기반 조회**: `presetId` 쿼리 파라미터 사용
+  - **직접 검색**: `applicant`, `startDate`, `endDate` 쿼리 조합 사용
 
-Request:
-```json
-{ "applicant": "삼성전자", "startDate": "20240101", "endDate": "20241231" }
+Request 예시 (presetId 사용):
+```
+GET /summary?presetId=1
+Authorization: Bearer <accessToken>
 ```
 
-Response (요약):
+Request 예시 (applicant + startDate + endDate 사용):
+```
+GET /summary?applicant=카카오&startDate=20250501&endDate=20251114
+Authorization: Bearer <accessToken>
+```
+
+Response:
 ```json
 {
   "status": "success",
-  "message": "요약 분석 성공",
+  "message": "요약 분석 완료",
   "data": {
-    "statistics": { "totalPatents": 635, "registrationRate": 45.5, "monthlyAverage": 52.9, "searchPeriod": { "startDate": "2024-01-01", "endDate": "2024-12-31" } },
-    "ipcDistribution": [ /* ... */ ],
-    "monthlyTrend": [ /* ... */ ],
-    "statusDistribution": [ /* ... */ ],
-    "recentPatents": [ /* ... */ ]
+    "applicant": "카카오",
+    "period": {
+      "startDate": "20250501",
+      "endDate": "20251114"
+    },
+    "totalCount": 123,
+    "statusCount": {
+      "공개": 50,
+      "등록": 30
+    },
+    "statusPercent": {
+      "공개": 40.65,
+      "등록": 24.39
+    },
+    "monthlyTrend": [
+      { "month": "2025-05", "count": 10 },
+      { "month": "2025-06", "count": 15 }
+    ],
+    "topIPC": [
+      { "code": "G06F", "count": 15 },
+      { "code": "H04L", "count": 12 }
+    ],
+    "recentPatents": [
+      {
+        "applicantName": "카카오",
+        "inventionTitle": "AI 기반 검색 시스템",
+        "applicationDate": "20251110",
+        "registerStatus": "공개",
+        "ipcMain": "G06F"
+      }
+    ],
+    "avgMonthlyCount": 15.5
   }
 }
 ```
@@ -425,7 +496,13 @@ Response (요약):
 {
   "status": "success",
   "message": "관심특허 목록 조회 성공",
-  "data": { "total": 45, "page": 1, "pageSize": 20, "totalPages": 3, "favorites": [ /* ... */ ] }
+  "data": {
+    "total": 45,
+    "page": 1,
+    "pageSize": 20,
+    "totalPages": 3,
+    "favorites": [ /* ... */ ]
+  }
 }
 ```
 
@@ -453,7 +530,7 @@ Response:
 - 인증: 필수
 - 응답: **200 OK**
 
-응답은 [3.3 특허 상세 조회](#33-특허-상세-조회)와 동일
+응답은 [3.3 특허 상세 조회](#33-특허-상세-조회)와 동일합니다.
 
 ---
 
@@ -482,12 +559,13 @@ Response:
 | 거절 | 거절됨 |
 
 ### IPC 코드
-- 특허 분류 코드, 파이프(`|`)로 다중 표현  
+- 특허 분류 코드, 파이프(`|`)로 다중 표현
 - 예: `G06F 3/06|G06F 11/10|G06F 9/451`
 
 ---
 
 ## HTTP 상태 코드
+
 | 코드 | 설명 |
 |------|------|
 | 200 | 요청 성공 |
@@ -501,16 +579,19 @@ Response:
 ---
 
 ## 설계 원칙
-- 프리셋 관리: 목록(minimal fields) vs 상세(full fields) 분리로 성능·가독성 개선  
-- 특허 검색: 프리셋 기반 파라미터로 통일, page=20 기본  
-- 요약 분석: 통계/IPC 분포/월별 추이/상태 분포/최근 건 제공  
-- 관심특허: 출원번호만으로 추가, 상세는 특허 상세와 동일 형식 재사용
+
+- **프리셋 관리**: 목록 조회는 최소한의 필드(minimal fields)로, 상세 조회에서 전체 정보 제공하여 성능과 가독성 개선
+- **특허 검색**: 프리셋 기반 파라미터로 통일, 페이지당 20건
+- **요약 분석**: presetId 또는 applicant + startDate + endDate 쿼리 조합으로 유연한 검색 지원
+- **관심특허**: 출원번호(applicationNumber)만으로 관리
+- **인증**: 모든 엔드포인트는 JWT Bearer Token 기반 인증 (Users 회원가입, 로그인, 토큰 재발급 제외)
 
 ---
 
 ## 메타
-- Version: 1.1  
-- Date: 2025-11-14  
-- 작성자: 심우현 (KNU / Kicom Internship)  
-- 변경사항: **배포 URL 반영(`onrender.com`)**, PostgreSQL 대응, `USERS.password_hash` 반영, JWT + RefreshToken 정책 반영 
+
+- **Version**: 1.1
+- **Date**: 2025-11-14
+- **작성자**: 심우현 (KNU / Kicom Internship)
+- **변경사항**: 구현 코드 반영, Summary 경로/메서드 통일, Summary 프리셋 및 직접 검색 옵션 추가, Preset 수정 메서드 PATCH로 변경, 로그아웃 메시지 수정
 - © 2025 TechLens Project. All rights reserved. (Kicom × KNU 인턴십 문서 / 무단 복제·배포 금지)
