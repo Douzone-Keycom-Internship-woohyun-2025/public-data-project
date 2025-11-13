@@ -9,7 +9,7 @@ Base URL: `https://techlens-backend-develop.onrender.com` · Auth: JWT Bearer ·
 - [인증](#인증)
   - [Authorization 헤더](#authorization-헤더)
   - [토큰 획득](#토큰-획득)
-  - [AccessToken / RefreshToken 정책](#AccessToken / RefreshToken 정책)
+  - [AccessToken / RefreshToken 정책](#AccessToken/RefreshToken정책)
 - [API 엔드포인트](#api-엔드포인트)
   - [1. Users (사용자 인증)](#1-users-사용자-인증)
     - [1.1 회원가입](#11-회원가입)
