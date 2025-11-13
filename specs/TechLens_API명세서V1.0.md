@@ -22,16 +22,32 @@ TechLens는 특허 정보 검색 및 분석 서비스를 제공하는 REST API�
 
 ### Authorization Header
 
-```
+```http
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ### 토큰 획득 방법
 
-1. 회원가입: POST /users/signup
-2. 로그인: POST /users/login
-3. 응답에서 token 값 추출
+1. 회원가입: POST /users/signup  
+2. 로그인: POST /users/login  
+3. **응답의 `data.token` 값** 추출  
 4. 모든 요청의 Authorization 헤더에 포함
+
+### JWT & 로그아웃 정책
+
+- 서버는 로그인 시 JWT를 발급하며 `exp`(만료시각)를 포함합니다.  
+- **로그아웃(POST /users/logout)** 호출 시, `Authorization` 헤더의 토큰을 **블랙리스트에 등록**하여 **만료 전이라도 즉시 무효화**합니다.  
+- 블랙리스트에 등록된 토큰으로 접근 시 **401 Unauthorized**가 반환됩니다.  
+- 만료된 토큰의 블랙리스트 항목은 주기적으로 정리(purge)됩니다.
+
+#### 블랙리스트된 토큰 접근 시 오류 예시
+
+```json
+{
+  "status": "fail",
+  "message": "로그아웃된 토큰입니다."
+}
+```
 
 ---
 
@@ -47,15 +63,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 | 인증 | 불필요 |
 | 상태 코드 | 201 Created |
 
-**Request Parameters**
-
-| 필드 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| email | String | Yes | 이메일 주소 |
-| password | String | Yes | 비밀번호 (최소 8자) |
-
 **Request Body**
-
 ```json
 {
   "email": "user@techlens.net",
@@ -64,11 +72,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
-  "message": "회원가입 성공"
+  "message": "회원가입 성공",
+  "data": {
+    "user": {
+      "user_tblkey": 2,
+      "email": "user@techlens.net",
+      "adddate": "2025-11-12T21:36:16.430Z"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
@@ -82,15 +97,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 | 인증 | 불필요 |
 | 상태 코드 | 200 OK |
 
-**Request Parameters**
-
-| 필드 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| email | String | Yes | 이메일 주소 |
-| password | String | Yes | 비밀번호 |
-
 **Request Body**
-
 ```json
 {
   "email": "user@techlens.net",
@@ -99,12 +106,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
   "message": "로그인 성공",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "data": {
+    "user": {
+      "user_tblkey": 1,
+      "email": "user@techlens.net",
+      "adddate": "2025-11-11T23:08:29.608Z"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
@@ -118,16 +131,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 | 인증 | JWT Bearer Token 필수 |
 | 상태 코드 | 200 OK |
 
-**Request Parameters**
-
+**Request Parameters**  
 없음
 
-**Request Body**
-
+**Request Body**  
 없음
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -160,7 +170,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 | description | String | No | 프리셋 설명 (최대 500자) |
 
 **Request Body**
-
 ```json
 {
   "presetName": "삼성 2024년 분석",
@@ -172,7 +181,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -208,13 +216,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 | limit | Integer | No | 10 | 조회할 항목 개수 |
 
 **Query String**
-
 ```
 GET /presets?skip=0&limit=10
 Authorization: Bearer <token>
 ```
 
-**Response Body**
+**Response Body**  
 
 ```json
 {
@@ -231,7 +238,6 @@ Authorization: Bearer <token>
         "applicant": "삼성전자",
         "startDate": "20240101",
         "endDate": "20241231",
-        "description": "삼성의 2024년 특허 분석",
         "createdAt": "2025-11-03T10:30:00Z"
       },
       {
@@ -240,7 +246,6 @@ Authorization: Bearer <token>
         "applicant": "LG전자",
         "startDate": "20230101",
         "endDate": "20231231",
-        "description": "LG의 2023년 특허 분석",
         "createdAt": "2025-11-02T14:15:00Z"
       }
     ]
@@ -265,14 +270,12 @@ Authorization: Bearer <token>
 | presetId | Integer | Yes | 프리셋 ID (Path) |
 
 **Query String**
-
 ```
 GET /presets/1
 Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -310,7 +313,6 @@ Authorization: Bearer <token>
 | description | String | No | 프리셋 설명 |
 
 **Request Body**
-
 ```json
 {
   "presetName": "삼성 2024년 최종",
@@ -322,7 +324,6 @@ Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -347,13 +348,12 @@ Authorization: Bearer <token>
 | presetId | Integer | Yes | 프리셋 ID (Path) |
 
 **Query String**
-
 ```
 DELETE /presets/1
 Authorization: Bearer <token>
 ```
 
-**Response Body**
+**Response Body**  
 
 없음 (204 상태 코드만 반환)
 
@@ -382,7 +382,6 @@ Authorization: Bearer <token>
 | page | Integer | No | 페이지 번호 (기본값: 1) |
 
 **Request Body**
-
 ```json
 {
   "applicant": "삼성전자",
@@ -393,7 +392,6 @@ Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -449,7 +447,6 @@ Authorization: Bearer <token>
 | page | Integer | No | 페이지 번호 (기본값: 1) |
 
 **Request Body**
-
 ```json
 {
   "inventionTitle": "AI 기반",
@@ -462,7 +459,6 @@ Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -503,14 +499,12 @@ Authorization: Bearer <token>
 | applicationNumber | String | Yes | 출원번호 (Path) |
 
 **Query String**
-
 ```
 GET /patents/1020250146315
 Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -558,7 +552,6 @@ Authorization: Bearer <token>
 | endDate | String | Yes | 분석 종료일 (YYYYMMDD) |
 
 **Request Body**
-
 ```json
 {
   "applicant": "삼성전자",
@@ -568,7 +561,6 @@ Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -713,14 +705,12 @@ Authorization: Bearer <token>
 | pageSize | Integer | No | 20 | 페이지당 항목 수 |
 
 **Query String**
-
 ```
 GET /favorites/list?page=1&pageSize=20
 Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -766,14 +756,7 @@ Authorization: Bearer <token>
 | 인증 | JWT Bearer Token 필수 |
 | 상태 코드 | 201 Created |
 
-**Request Parameters**
-
-| 필드 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| applicationNumber | String | Yes | 출원번호 |
-
 **Request Body**
-
 ```json
 {
   "applicationNumber": "1020250146315"
@@ -781,7 +764,6 @@ Authorization: Bearer <token>
 ```
 
 **Response Body**
-
 ```json
 {
   "status": "success",
@@ -806,14 +788,12 @@ Authorization: Bearer <token>
 | applicationNumber | String | Yes | 출원번호 (Path) |
 
 **Query String**
-
 ```
 GET /favorites/1020250146315
 Authorization: Bearer <token>
 ```
 
-**Response Body**
-
+**Response Body**  
 특허 상세 조회와 동일 (3.3 참조)
 
 ---
@@ -833,14 +813,12 @@ Authorization: Bearer <token>
 | applicationNumber | String | Yes | 출원번호 (Path) |
 
 **Query String**
-
 ```
 DELETE /favorites/1020250146315
 Authorization: Bearer <token>
 ```
 
-**Response Body**
-
+**Response Body**  
 없음 (204 상태 코드만 반환)
 
 ---
@@ -866,9 +844,8 @@ Authorization: Bearer <token>
 
 ### IPC 코드
 
-특허 분류 코드로, 파이프(|)로 구분하여 다중 코드 표현.
-
-예: G06F 3/06|G06F 11/10|G06F 9/451
+특허 분류 코드로, 파이프(|)로 구분하여 다중 코드 표현.  
+예: `G06F 3/06|G06F 11/10|G06F 9/451`
 
 ---
 
@@ -889,17 +866,13 @@ Authorization: Bearer <token>
 ## 설계 원칙
 
 ### 프리셋 관리
-
-프리셋은 검색 조건을 저장하는 템플릿으로 작동합니다. 특허검색 및 요약분석 탭에서 프리셋을 선택하면 저장된 회사명과 기간이 검색창에 자동으로 채워집니다.
+프리셋은 검색 조건을 저장하는 템플릿으로 작동합니다. 특허검색 및 요약분석 탭에서 프리셋을 선택하면 저장된 회사명과 기간이 검색창에 자동으로 채워집니다. **목록 조회에서는 description을 제외**하여 응답 크기를 줄이고, 상세 조회 시 전체 정보를 제공합니다.
 
 ### 특허 검색
-
 특허 검색은 프리셋에서 추출한 회사명과 기간으로 수행되며, 검색 결과는 20개씩 페이징됩니다. 기본 검색과 상세 검색으로 나뉘어 필터링 옵션을 제공합니다.
 
 ### 요약 분석
-
 요약 분석은 파이차트(IPC 분포), 라인차트(월별 동향), 원형차트(등록상태 분포), 통계 정보, 최근 3개 특허를 제공합니다.
 
 ### 관심특허 관리
-
 관심특허는 출원번호만으로 추가할 수 있으며, 백엔드에서 특허 정보를 자동으로 조회합니다. 관심특허는 20개씩 페이징되어 조회됩니다.
