@@ -6,7 +6,7 @@ KIPRIS Open API 기반의 특허 검색 및 분석 서비스를 위한 핵심 �
 
 ---
 
-## 📊 ERD 다이어그램
+## ERD 다이어그램
 
 
 <img width="1391" height="866" alt="BookStore (2)" src="https://github.com/user-attachments/assets/9e02caa1-0c94-4828-b495-8695189beb6f" />
@@ -251,10 +251,10 @@ CREATE INDEX idx_patent_ipc_subclass   ON patent_ipc_subclass_map(ipc_subclass);
 CREATE INDEX idx_jwt_blacklist_expires ON jwt_blacklist(expires_at);
 ```
 
-📄 Version: 1.1
-📅 Date: 2025-11-13
-👤 작성자: 심우현 (KNU / Kicom Internship)
-🔄 변경사항: PostgreSQL 환경 대응, USERS.password_hash 반영, JWT_BLACKLIST 테이블 추가
+Version: 1.1
+Date: 2025-11-13
+작성자: 심우현 (KNU / Kicom Internship)
+변경사항: PostgreSQL 환경 대응, USERS.password_hash 반영, JWT_BLACKLIST 테이블 추가
 
 © 2025 TechLens Project. All rights reserved.
 본 문서의 내용은 Kicom × KNU 인턴십 프로그램의 일부로 작성되었으며,
